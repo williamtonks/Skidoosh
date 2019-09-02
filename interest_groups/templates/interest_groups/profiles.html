@@ -1,0 +1,65 @@
+{% extends 'interest_groups/base.html' %}
+{% block content %}
+{% load static %}
+<!--<div class="mx-5">-->
+    <!--<h1 class="mt-4">All Profiles</h1>-->
+    <!--<div class="list-group">-->
+        <!--{% for profile in profile_list %}-->
+            <!--{% if profile.name != '' %}-->
+                <!--<a href="{% url 'profile' profile.id %}"-->
+                    <!--class="list-group-item list-group-item-action flex-column align-items-start">-->
+                    <!--<div class="d-flex w-100 justify-content-between">-->
+                        <!--<h5 class="mb-1">{{ profile.name }}</h5>-->
+                    <!--</div>-->
+                    <!--<p class="mb-1">{{ profile.bio }}</p>-->
+                <!--</a>-->
+            <!--{% endif %}-->
+        <!--{% endfor %}-->
+    <!--</div>-->
+<!--</div>-->
+
+<div class="container mt-5">
+    <table id="table1" class="table table-borderless table-striped table-hover">
+        {% if profile_list.count > 0 %}
+            <tr>
+                <h3 style="color: #dd4b03;">All Profiles</h3>
+                <hr>
+            </tr>
+            <thead>
+                <th scope="col">Picture</th>
+                <th scope="col">Name</th>
+                <th scope="col">Rating</th>
+                <th scope="col">Bio</th>
+            </thead>
+
+            {% for profile in profile_list %}
+            {% load ratings %}
+            <tr>
+                <td width="20%">
+                    <a href="{% url 'profile' profile.id %}"
+                        style="display: inline-block;
+                                position: relative;
+                                z-index: 1;
+                                padding-top: 4%; padding-bottom: 4%; padding-left: 4%; padding-right: 290%;
+                                margin-top: -4%; margin-bottom: -4%; margin-left: -4%; margin-right: -1000px;">
+                        {% if profile.picture %}
+                        <img class="rounded-circle" src="{{profile.picture.url}}" style="width:200px;height:200px;">
+                        {% else %}
+                        <img class="rounded-circle" src="{% static 'images/profile_pictures/default_profile_picture.png' %}" style="width:200px;height:200px;">
+                        {% endif %}
+                    </a>
+                </td>
+                <td width="20%" style="word-break:break-all;"><h5>{{profile.name}}</h5></td>
+                <td width="20%">{% ratings profile %}</td>
+                <td width="40%" style="word-break:break-all;"><p>{{profile.bio}}</p></td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </table>
+</div>
+<br>
+<div align="center">
+    {% load static %}
+    <img src="{% static 'images/skidoosh1.png' %}" style="width:25%; height:40%;">
+</div>
+{% endblock %}

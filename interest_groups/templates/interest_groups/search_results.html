@@ -1,0 +1,87 @@
+{% extends "interest_groups/base.html" %}
+{% block content %}
+{% load static %}
+<div class="container">
+    <p class="my-2" align="center"><i>Showing results for <span style="color:#F95400">{{search_q}}</span></i>...</p>
+    <table id="table2" class="table table-borderless table-striped table-hover">
+
+
+        {% if group_results.count > 0 %}
+            <tr>
+                <h3 style="color: #dd4b03;">Groups</h3>
+                <hr>
+            </tr>
+            <thead>
+                <th scope="col">Picture</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+            </thead>
+
+            {% for group in group_results %}
+            <tr>
+                <td width="30%">
+                    <a href="{% url 'interest_group' group.id %}"
+                        style="display: inline-block;
+                                position: relative;
+                                z-index: 1;
+                                padding-top: 4%; padding-bottom: 4%; padding-left: 4%; padding-right: 290%;
+                                margin-top: -4%; margin-bottom: -4%; margin-left: -4%; margin-right: -1000px;">
+                    {% if group.thumbnail %}
+                    <img class="rounded-circle" src="{{group.thumbnail.url}}" style="width:200px;height:200px;">
+                    {% else %}
+                    <img class="rounded-circle" src="{% static 'images/groups/thumbnails/default_thumbnail.jpg' %}" style="width:200px;height:200px;">
+                    {% endif %}
+                    </a>
+                </td>
+                <td width="30%" style="word-break:break-all;"><h5>{{group.name}}</h5></td>
+                <td width="40%" style="word-break:break-all;"><p>{{group.description}}</p></td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </table>
+    <br>
+    <table id="table1" class="table table-borderless table-striped table-hover">
+        {% if profile_results.count > 0 %}
+            <tr>
+                <h3 style="color: #dd4b03;">Profiles</h3>
+                <hr>
+            </tr>
+
+            <thead>
+                <th scope="col">Picture</th>
+                <th scope="col">Name</th>
+                <th scope="col">Ranking</th>
+                <th scope="col">Bio</th>
+            </thead>
+
+            {% for profile in profile_results %}
+            {% load ratings %}
+            <tr>
+                <td width="20%">
+                    <a href="{% url 'profile' profile.id %}"
+                        style="display: inline-block;
+                                position: relative;
+                                z-index: 1;
+                                padding-top: 4%; padding-bottom: 4%; padding-left: 4%; padding-right: 290%;
+                                margin-top: -4%; margin-bottom: -4%; margin-left: -4%; margin-right: -1000px;">
+                    {% if profile.picture %}
+                    <img class="rounded-circle" src="{{profile.picture.url}}" style="width:200px;height:200px;">
+                    {% else %}
+                    <img class="rounded-circle" src="{% static 'images/profile_pictures/default_profile_picture.png' %}" style="width:200px;height:200px;">
+                    {% endif %}
+                    </a>
+                </td>
+                <td width="20%" style="word-break:break-all;"><a style="text-align:left; color:black; text-decoration:none;" href="{% url 'profile' profile.id %}"><h5>{{profile.name}}</h5></a></td>
+                <td width="20%">{% ratings profile %}</td>
+                <td width="40%" style="word-break:break-all;"><a style="text-align:left; color:black; text-decoration:none;" href="{% url 'profile' profile.id %}"><p>{{profile.bio}}</p></a></td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </table>
+</div>
+<br>
+<div align="center">
+    {% load static %}
+    <img src="{% static 'images/skidoosh1.png' %}" style="width:25%; height:40%;">
+</div>
+{% endblock %}

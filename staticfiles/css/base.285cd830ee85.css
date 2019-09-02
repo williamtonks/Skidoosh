@@ -1,0 +1,26 @@
+.btn.btn-outline-danger.my-2.my-sm-0 {
+    color: #F95400;
+    border-color: #F95400;
+}
+
+.btn-outline-danger.my-2.my-sm-0:hover {
+    background: #F95400;
+    color:white;
+}
+
+.navbar-brand a {
+    color: #F95400;
+}
+
+.google {
+    width: 300px;
+    height: auto;
+}
+
+.jumbotron {
+    background: white;
+}
+
+.privacy_policy_link {
+    color: #F95400;
+}

@@ -1,0 +1,25 @@
+{% extends 'interest_groups/base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+<!--<div class="card m-5 text-center bg-light" >-->
+<div class="container my-3">
+  {% load static %}
+  <!--<img class="card-img" src="{% static 'images/join_the_group.png' %}" alt="Card image">-->
+  <!--<div class="card-img-overlay">-->
+    <h2 class="card-title mt-2">Update Profile Info</h2>
+    <form enctype="multipart/form-data" method="post" autocomplete="off">
+      {% csrf_token %}
+      <br>  {{ form.name|as_crispy_field }}
+      <br>{{ form.bio|as_crispy_field }}
+      <br>{{ form.year|as_crispy_field }}
+      <br>{{ form.phonenumber|as_crispy_field }}
+      <br>{{ form.picture|as_crispy_field }}
+      <button class="btn btn-primary" type="submit">Update</button>
+      <p></p>
+    </form>
+    <div style="text-align:center;">
+        <a class="privacy_policy_link" href="{% url 'privacy_policy' %}">Privacy Policy</a>
+    </div>
+  <!--</div>-->
+</div>
+{% endblock %}

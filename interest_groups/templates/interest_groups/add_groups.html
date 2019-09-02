@@ -1,0 +1,60 @@
+{% extends "interest_groups/base.html" %}
+{% block content %}
+<div class="container mt-3">
+    <h3 style="color: #dd4b03;">Select Groups</h3>
+    <form method="post">
+    {% csrf_token %}
+    {% load static %}
+    {% if no_groups %}
+    <hr>
+    <div class="container">
+        <div class="col-xs-1" align="center">
+            <h4 style="color:#F95400">You've been busy!</h2>
+            <h5>It looks like you've already joined all the existing groups.</h3>
+            <form action="{% url 'home' %}"><input class="btn btn-primary" type="submit" value="Return to Home"></form>
+        </div>
+    </div>
+    <img style="display: block; margin-left: auto; margin-right: auto; width:50%; height:60%;" src="{% static 'images/group_of_pandas.png' %}">
+    {% else %}
+    <table class="table table-striped">
+        <thead>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </thead>
+    {% for group in group_list %}
+    <tr align="center">
+        <td align="center" style="padding-top: 36px; padding-left: 0px; padding-right: 10px;">
+            <input type="checkbox" name="choices" value="{{group.id}}" style="zoom: 2;
+                                      transform: scale(1.2);
+                                      -ms-transform: scale(1.2);
+                                      -webkit-transform: scale(1.2);
+                                      -o-transform: scale(1.2);
+                                      -moz-transform: scale(1.2);
+                                      transform-origin: 0 0;
+                                      -ms-transform-origin: 0 0;
+                                      -webkit-transform-origin: 0 0;
+                                      -o-transform-origin: 0 0;
+                                      -moz-transform-origin: 0 0;
+                                      -webkit-transform-origin: 0 0;">
+        </td>
+        <td align="left"><a style="color: #000000; text-decoration:none;" href="{% url 'interest_group' group.id %}"><h4>{{group.name}}</h4></a><h5 class="text-muted">- {{group.description}}</h5></td>
+        <td align="right">
+            {% if group.thumbnail %}
+            <img class="rounded-circle" src="{{group.thumbnail.url}}" alt="Group Picture Not Found" style="width:100px;height:100px;">
+            {% else %}
+            <img class="rounded-circle" src="{% static 'images/groups/thumbnails/default_thumbnail.jpg' %}" style="width:200px;height:200px;">
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </table>
+    <div style="text-align:center;">
+        <button class="btn btn-primary" type="submit" name="join">Join Selected Groups</button>
+    </div>
+    </form>
+    <img style="display: block; margin-left: auto; margin-right: auto; width:80%; height:60%;" src="{% static 'images/join_the_group.png' %}">
+    {% endif %}
+</div>
+{% endblock %}
+

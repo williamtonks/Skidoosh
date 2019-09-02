@@ -1,0 +1,11 @@
+Django==2.1.2
+gunicorn
+django-heroku
+Pillow
+social-auth-app-django
+django-mptt
+django-star-ratings
+boto3
+django-storages
+django-tempus-dominus
+django-crispy-forms

@@ -1,0 +1,90 @@
+{% extends "interest_groups/base.html" %}
+{% block content %}
+{% load ratings %}
+<!--<head>-->
+    <!--<meta charset="utf-8">-->
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <!--&lt;!&ndash; The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags &ndash;&gt;-->
+    <!--<title>AHM Kamal</title>-->
+    <!--<link href="css/bootstrap.min.css" rel="stylesheet">-->
+    <!--<link href="css/custom.css" rel="stylesheet">-->
+    <!--<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">-->
+    <!--<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>-->
+<!--</head>-->
+
+<!-- ******HEADER****** -->
+  <header class="header">
+    <div class="container">
+      <div class="profile name" style="padding-top:20px;">
+
+        <div class="row" style="margin-top:0px;">
+        <div class="col-md-9">
+          <h2 style="font-size:38px"><strong>{{profile.name}}</strong></h2>
+        </div>
+        <div class="col-md-3">
+          <div class="button" style="float:right;" style="color:#F95400">
+          {% if user.profile == profile %}
+            <a href=" {% url 'edit_profile' %}" class="btn btn-outline-success btn-sm">Edit Profile</a>
+          {% endif %}
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:20px;">
+        <div class="col-md-3"> <!-- Image -->
+          {% load static %}
+          {% if profile.picture.url %}
+          <img class="rounded-circle" src="{{profile.picture.url}}" style="width:200px;height:200px;">
+          {% else %}
+          <img class="rounded-circle" src="{% static 'images/profile_pictures/default_profile_picture.png' %}" style="width:200px;height:200px;">
+          {% endif %}
+        </div>
+
+        <div class="col-md-6"> <!-- Rank & Qualifications -->
+          <h5 style="color:#F95400">{{profile.year}}</h5>
+          {% if profile == user.profile %}
+
+          {% else %}
+          {% ratings profile %}
+          {% endif %}
+        </div>
+
+        <div class="col-md-3 text-center"> <!-- Phone & Social -->
+          <span class="number" style="font-size:18px">Phone: <strong>{{profile.phonenumber}}</strong></span>
+      </div>
+    </div>
+  </header>
+    <!--End of Header-->
+    <!-- Main container -->
+    <div class="container mb-3">
+      <!-- Section:Biography -->
+      <div class="row">
+            <div class="col-md-12">
+              <div class="card card-block text-xs-left">
+                <h2 class="card-title m-2" style="color:#F95400"><i class="fa fa-user fa-fw"></i>Biography</h2>
+                <div style="height: 15px"></div>
+                  <p class="mx-3">{{profile.bio}}</p>
+              </div>
+            </div>
+          </div>
+      <!-- End:Biography -->
+
+      <!--Section:Interests-->
+      <div class="row">
+        <div class="col-md-12">
+            <div class="card card-block">
+              <h2 class="card-title mx-2 mt-2 mb-0"  style="color:#F95400"><i class="fa fa-rocket fa-fw"></i>Interests</h2>
+              <ul class="list-group list-group-flush mb-0" style="margin-top:15px;margin-bottom:15px;">
+                  {% for group in profile.groups.all %}
+                  <a href="{% url 'interest_group' group.id %}" class="list-group-item list-group-item-action">{{ group.name }}</a>
+                  {% empty %}
+                  <li class="list-group-item">None</li>
+                  {% endfor %}
+              </ul>
+            </div>
+        </div>
+    </div>
+  <!-- End :Interests -->
+{% endblock %}

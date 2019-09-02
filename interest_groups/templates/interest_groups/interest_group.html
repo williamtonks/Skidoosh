@@ -1,0 +1,189 @@
+{% extends 'interest_groups/base.html' %}
+{% block content %}
+<div class="card m-5">
+    <!--{% load static %}-->
+    <!--<img class="card-img-top" src="{% static 'images/default_group.jpg' %}" alt="No Image Found">-->
+    <div class="card-body">
+        <h2 class="card-title">{{ interest_group.name }}</h2>
+        <h5 class="card-subtitle text-muted">{{ interest_group.description }}</h5>
+    </div>
+
+    {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+            <input class="btn btn-primary ml-3" type="submit" name="{{ edit_group_action }}" value="{{ edit_group_membership }}"></input>
+        </form>
+
+        {% ifequal edit_group_action 'leave_group' %}
+        <ul class='list-group mx-3' style="list-style-type: none;">
+        <a href="{% url 'create_discussion_post' interest_group.id %}"
+           class="list-group-item list-group-item-action flex-column align-items-start">
+            Create Discussion Post
+        </a>
+        <a href="{% url 'create_event_post' interest_group.id %}"
+           class="list-group-item list-group-item-action flex-column align-items-start">
+            Create Event Post
+        </a>
+        </ul>
+
+
+        <div class="card-body">
+            <ul class="list-group list-group-flush" style="list-style: none;">
+                {% load mptt_tags %}
+                <li>
+                    {% recursetree posts %}
+                    <li>
+                        <!--<h5 class="card-title"><u>{{ post.author }}</u></h5>-->
+                        <!--<h6 class="card-subtitle text-muted">{{ post.text }}</h6>-->
+                        {% if node.author == user.profile %}
+                        <h5 class = "p-3 mb-4 border border-primary bg-light text-dark">
+                              {% if node.eventpost %}
+                                  <u><b><font face = "helvetica">Event</b></u>: {{ node.eventpost.title}}
+                                  <br>Created by: <a class = "text-dark" href = "{% url 'profile' node.author.id %}">{{ node.author.name }}</a><br>{{ node.text }}<br>{{ node.eventpost.event_date }}<br>Attending: {{ node.likes.all|length }} </font><br>
+                              {% elif node.discussionpost %}
+                                  <u><b><font face = "verdana">Discussion</b></u>: {{ node.discussionpost.title}}
+                                  <br>Created by: <a class = "text-dark" href = "{% url 'profile' node.author.id %}">{{ node.author.name }}</a><br>{{ node.text }}<br>Likes: {{ node.likes.all|length }}</font> <br>
+                              {% else %}
+                                   <a class = "text-dark" href = "{% url 'profile' node.author.id %}">{{ node.author }}</a><br>{{ node.text }}<br>Likes: {{ node.likes.all|length }}<br>
+                              {% endif %}
+                             {% if user.profile in node.likes.all %}
+                                  {% if node.eventpost %}
+                                  <a class="btn btn-primary" href="{% url 'unlike_post' interest_group.id node.id %}" >Unattend</a>
+                                  {% else %}
+                                  <a class="btn btn-primary" href="{% url 'unlike_post' interest_group.id node.id %}" >Unlike</a>
+                                  {% endif %}
+                              {% else %}
+                                  {% if node.eventpost %}
+                                  <a class="btn btn-primary" href="{% url 'like_post' interest_group.id node.id %}" >Attend</a>
+                                  {% else %}
+                                  <a class="btn btn-primary" href="{% url 'like_post' interest_group.id node.id %}" >Like</a>
+                                  {% endif %}
+                              {% endif %}
+                              {% if node.author == user.profile %}
+                                  <p style = "text-align:right"><a href="{% url 'edit_post' interest_group.id node.id %}" class= "mt-2">Edit</a></p>
+                              {% endif %}
+                               <a href="{% url 'create_comment' interest_group.id node.id %}" class="list-group-item list-group-item-action mt-2">Reply</a>
+                          </h5>
+                          {% if not node.is_leaf_node %}
+                              <ul style="list-style: none;">
+                                  {{ children }}
+                              </ul>
+                          {% endif %}
+                        {% elif node.eventpost %}
+                            <h5 class = "p-3 mb-4 border border-warning bg-light text-dark">
+                                  {% if node.eventpost %}
+                                      <u><b><font face = "helvetica">Event</b></u>: {{ node.eventpost.title}}
+                                      <br>Created by: <a class = "text-dark" href = "{% url 'profile' node.author.id %}">{{ node.author.name }}</a> <br>{{ node.text }}<br>{{ node.eventpost.event_date }}<br>Attending: {{ node.likes.all|length }}</font><br>
+                                  {% elif node.discussionpost %}
+                                      <u><b><font face = "verdana">Discussion</b></u>: {{ node.discussionpost.title}}
+                                      <br>Created by: {{ node.author.name }}<br>{{ node.text }}<br>Likes: {{ node.likes.all|length }} </font> <br>
+                                  {% else %}
+                                      <u>{{ node.author }}</u><br>{{ node.text }}<br>Likes: {{ node.likes.all|length }}<br>
+                                  {% endif %}
+                                 {% if user.profile in node.likes.all %}
+                                      {% if node.eventpost %}
+                                      <a class="btn btn-primary" href="{% url 'unlike_post' interest_group.id node.id %}" >Unattend</a>
+                                      {% else %}
+                                      <a class="btn btn-primary" href="{% url 'unlike_post' interest_group.id node.id %}" >Unlike</a>
+                                      {% endif %}
+                                  {% else %}
+                                      {% if node.eventpost %}
+                                      <a class="btn btn-primary" href="{% url 'like_post' interest_group.id node.id %}" >Attend</a>
+                                      {% else %}
+                                      <a class="btn btn-primary" href="{% url 'like_post' interest_group.id node.id %}" >Like</a>
+                                      {% endif %}
+                                  {% endif %}
+                                  {% if node.author == user.profile %}
+                                      <p style = "text-align:right"><a href="{% url 'edit_post' interest_group.id node.id %}" class= "mt-2">Edit</a></p>
+                                  {% endif %}
+                                   <a href="{% url 'create_comment' interest_group.id node.id %}" class="list-group-item list-group-item-action mt-2">Reply</a>
+                              </h5>
+                              {% if not node.is_leaf_node %}
+                                  <ul style="list-style: none;">
+                                      {{ children }}
+                                  </ul>
+                              {% endif %}
+                        {% elif node.discussionpost %}
+                          <h5 class = "p-3 mb-4 border border-success bg-light text-dark">
+                            {% if node.eventpost %}
+                                <u><b><font face = "helvetica">Event</b></u>: {{ node.eventpost.title}}
+                                <br>Created by: {{ node.author.name }}<br>{{ node.text }}<br>{{ node.eventpost.event_date }}<br>Attending: {{ node.likes.all|length }} </font><br>
+                            {% elif node.discussionpost %}
+                                <u><b><font face = "verdana"> Discussion</b></u>: {{ node.discussionpost.title}}
+                                <br>Created by: <a class = "text-dark" href = "{% url 'profile' node.author.id %}">{{ node.author.name }}</a><br>{{ node.text }}<br>Likes: {{ node.likes.all|length }} </font><br>
+                            {% else %}
+                                <u>{{ node.author }}</u><br>{{ node.text }}<br>Likes: {{ node.likes.all|length }}<br>
+                            {% endif %}
+                             {% if user.profile in node.likes.all %}
+                                  {% if node.eventpost %}
+                                  <a class="btn btn-primary" href="{% url 'unlike_post' interest_group.id node.id %}" >Unattend</a>
+                                  {% else %}
+                                  <a class="btn btn-primary" href="{% url 'unlike_post' interest_group.id node.id %}" >Unlike</a>
+                                  {% endif %}
+                              {% else %}
+                                  {% if node.eventpost %}
+                                  <a class="btn btn-primary" href="{% url 'like_post' interest_group.id node.id %}" >Attend</a>
+                                  {% else %}
+                                  <a class="btn btn-primary" href="{% url 'like_post' interest_group.id node.id %}" >Like</a>
+                                  {% endif %}
+                              {% endif %}
+                              {% if node.author == user.profile %}
+                                  <p style = "text-align:right"><a href="{% url 'edit_post' interest_group.id node.id %}" class ="mt-2">Edit</a></p>
+                              {% endif %}
+                               <a href="{% url 'create_comment' interest_group.id node.id %}" class="list-group-item list-group-item-action mt-2">Reply</a>
+                          </h5>
+                          {% if not node.is_leaf_node %}
+                              <ul style="list-style: none;">
+                                  {{ children }}
+                              </ul>
+                          {% endif %}
+                        {% else %}
+                          <h5 class = "p-3 mb-4 border border-info bg-light text-dark">
+                            {% if node.eventpost %}
+                                <u><b><font face = "verdana">Event</font></b></u>: {{ node.eventpost.title}}
+                                <br>Created by: {{ node.author.name }}<br>{{ node.text }}<br>{{ node.eventpost.event_date }}<br>Attending: {{ node.likes.all|length }}<br>
+                            {% elif node.discussionpost %}
+                                <u><b><font face = "verdana"> Discussion</font></b></u>: {{ node.discussionpost.title}}
+                                <br>Created by: {{ node.author.name }}<br>{{ node.text }}<br>Likes: {{ node.likes.all|length }} <br>
+                            {% else %}
+                                <a class = "text-dark" href = "{% url 'profile' node.author.id %}">{{ node.author }}</a><br>{{ node.text }}<br>Likes: {{ node.likes.all|length }}<br>
+                            {% endif %}
+                             {% if user.profile in node.likes.all %}
+                                  {% if node.eventpost %}
+                                  <a class="btn btn-primary" href="{% url 'unlike_post' interest_group.id node.id %}" >Unattend</a>
+                                  {% else %}
+                                  <a class="btn btn-primary" href="{% url 'unlike_post' interest_group.id node.id %}" >Unlike</a>
+                                  {% endif %}
+                              {% else %}
+                                  {% if node.eventpost %}
+                                  <a class="btn btn-primary" href="{% url 'like_post' interest_group.id node.id %}" >Attend</a>
+                                  {% else %}
+                                  <a class="btn btn-primary" href="{% url 'like_post' interest_group.id node.id %}" >Like</a>
+                                  {% endif %}
+                              {% endif %}
+                              {% if node.author == user.profile %}
+                                  <p style = "text-align:right"><a href="{% url 'edit_post' interest_group.id node.id %}">Edit</a></p>
+                              {% endif %}
+                               <a href="{% url 'create_comment' interest_group.id node.id %}" class="list-group-item list-group-item-action mt-2">Reply</a>
+                          </h5>
+                          {% if not node.is_leaf_node %}
+                              <ul style="list-style: none;">
+                                  {{ children }}
+                              </ul>
+                          {% endif %}
+                        {% endif %}
+                        </li>
+                    {% endrecursetree post %}
+                </li>
+            </ul>
+        </div>
+        {% else %}
+            <ul class="list-group" style="list-style: none; text-align: center;">
+                <li>
+                    <i><p class="p-3 bg-light mb-0">You'll be able to see posts and comments when you join the group!</p></i>
+                </li>
+            </ul>
+        {% endifequal %}
+    {% endif %}
+</div>
+{% endblock content %}

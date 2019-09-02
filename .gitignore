@@ -1,0 +1,15 @@
+
+\.vscode/
+
+interest_groups/migrations/__pycache__/
+
+interest_groups/__pycache__/
+
+skillshare/__pycache__/
+
+# Django stuff:
+*.log
+local_settings.py
+
+# Pycharm workspace:
+.idea/*

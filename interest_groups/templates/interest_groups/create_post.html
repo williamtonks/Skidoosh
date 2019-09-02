@@ -1,0 +1,60 @@
+{% extends "interest_groups/base.html" %}
+{% block content %}
+
+{% load crispy_forms_tags %}
+<div class="card m-5 text-center bg-light">
+    {% load static %}
+    <!--<img class="card-img" src="{% static 'images/join_the_group.png' %}" alt="">-->
+    <!--<div class="card-img-overlay">-->
+        <form method="post" autocomplete="off">
+            {% csrf_token %}
+            <div class="form-group">
+                <ul style="list-style-type: none; text-align: left;">
+                    <!--{{ form.as_ul }}-->
+                    <h2 class="card-title mt-4">{{ page_title }}</h2>
+                    {% if page_title == 'Create Discussion Post' %}
+                    <li class="mr-5">{{ form.title|as_crispy_field }}</li>
+                    <li class="mr-5">{{ form.text|as_crispy_field }}</li>
+                    {% elif page_title == 'Create Event Post' %}
+                    <li class="mr-5">{{ form.title|as_crispy_field }}</li>
+                    <li class="mr-5">{{ form.text|as_crispy_field }}</li>
+                    <li class="mr-5">{{ form.event_date|as_crispy_field }}</li>
+
+                    {% else %}
+                        {% for item in form %}
+                            <li><p>{{ item.label_tag|cut:':' }}</p></li>
+                            {% if item.label_tag|cut:':' == 'Title' %}
+                            <li class="form-control">{{ item }}</li>
+                            {% elif item.label_tag|cut:':' == 'Text' %}
+                            <li class="form-control">{{ item }}</li>
+                            {% elif item.label_tag|cut:':' == 'Event date' %}
+                            <li>
+                                <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                                  {{ form.event_date }}
+                                  <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                  </div>
+                                </div>
+
+                                <script>
+                                  $(function () {
+                                    $("#datetimepicker1").datetimepicker({
+                                      format: 'DD/MM/YYYY HH:mm',
+                                    });
+                                  });
+                                </script>
+                            </li>
+                            {% else %}
+                            <li class="btn btn-primary">{{ item }}</li>
+                            {% endif %}
+
+                            <br>
+                        {% endfor %}
+                    {% endif %}
+                    <input class="btn btn-primary" type="submit" value="Submit">
+                </ul>
+            </div>
+        </form>
+    <!--</div>-->
+</div>
+{% endblock content %}

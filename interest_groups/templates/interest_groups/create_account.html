@@ -1,0 +1,11 @@
+{% extends "interest_groups/base.html" %}
+{% block content %}
+<h1>Create Account</h1>
+<form method="post">
+    {% csrf_token %}
+    <ul class="account_list">
+        {{ form.as_ul }}
+        <input type="submit" value="Submit">
+    </ul>
+</form>
+{% endblock content %}
